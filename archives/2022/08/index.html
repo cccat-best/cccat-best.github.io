@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
   
-  <title itemprop="name">vscode写uniapp的bug记录 | Zoe Loo</title>
+  <title itemprop="name">archive_a: 2022/8 | Zoe Loo</title>
   
     <link rel="shortcut icon" href="https://i.52112.com/icon/256/20190226/31312/1548252.png">
   
@@ -360,186 +360,172 @@
   </div>
 </header>
 
-        <link rel="stylesheet" type="text/css" href="/css/sharejs.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css">
-<div class="pattern-center-blank"></div>
-
-  <div class="pattern-center single-center">
-    <!-- 有配图默认渲染第一张 -->
-    <div class="pattern-attachment-img lazyload" style="background-image: url(https://p3-tt-ipv6.byteimg.com/origin/pgc-image/1f78a22aaaec40dcb95bf91459e78dd0);" src="https://cdn.jsdelivr.net/gh/honjun/cdn@1.6/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://p3-tt-ipv6.byteimg.com/origin/pgc-image/1f78a22aaaec40dcb95bf91459e78dd0">
-    </div>
-    <header class="pattern-header single-header">
-      <h1 class="entry-title">
-      vscode写uniapp的bug记录</h1>
-      <p class="entry-census">
-       
-        2022-7-16<span class="bull">
-        ·</span>
-      <span id="busuanzi_value_page_pv"></span>次阅读</p>
-    </header>
-  </div>
-
+        <div class="blank" style="padding-top: 75px;">
+</div>
 <div id="content" class="site-content">
-  <div id="primary" class="content-area">
-    <main id="main" class="site-main" role="main">
-      <article id="post-1" class="post-1 post type-post status-publish format-standard has-post-thumbnail hentry category-uncategorized">
-        <div class="toc"></div>
-        <!--<div class="toc-entry-content"><!-- 套嵌目录使用（主要为了支援评论）-->
-        
-        <div class="entry-content">
-          <h1 id="vscode写uniapp的bug记录"><a href="#vscode写uniapp的bug记录" class="headerlink" title="vscode写uniapp的bug记录"></a>vscode写uniapp的bug记录</h1><h2 id="新建uniapp组件"><a href="#新建uniapp组件" class="headerlink" title="新建uniapp组件"></a>新建uniapp组件</h2><p>vscode在生成新组件时，结构是不完整的，<code>script</code> 中生成的的  <code>export default &#123;</code>   模块少了一个  <strong>“ } ”</strong>，这算是vscode的一个漏洞叭</p>
-<h2 id="UI组件：uni-swipe-action-item"><a href="#UI组件：uni-swipe-action-item" class="headerlink" title="UI组件：uni-swipe-action-item"></a>UI组件：uni-swipe-action-item</h2><p>这个ui组件的问题可以说是折磨的ZOE很惨很惨（&gt;_&lt;），这是一个实现滑动删除功能的组件，如下图</p>
-<p><img src="https://pic.imgdb.cn/item/62d2f2c6f54cd3f9377fac13.png" alt="滑动删除实例"></p>
-<p>使用这个组件，报的错误很离谱，搜了很多网站都是答非所问，好在ZOE最后都解决啦~ヾ(✿ﾟ▽ﾟ)ノ</p>
-<h3 id="TypeError-Cannot-read-property-‘userAgent’-of-undefined-Search"><a href="#TypeError-Cannot-read-property-‘userAgent’-of-undefined-Search" class="headerlink" title="TypeError: Cannot read property ‘userAgent’ of undefined - Search"></a>TypeError: Cannot read property ‘userAgent’ of undefined - Search</h3><ul>
-<li><p>这个ZOE跟着各种各样、五花八门的博客试了好多种方法</p>
-</li>
-<li><p>最后是改了  <u>项目名称\node_modules@dcloudio\uni-ui\lib\uni-swipe-action-item\mpxs.js</u> 中的代码</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 原来的代码</span><br><span class="line">let mpMixins = &#123;&#125;</span><br><span class="line">let is_pc = null</span><br><span class="line">// #ifdef H5</span><br><span class="line">import &#123;</span><br><span class="line">	isPC</span><br><span class="line">&#125; from &quot;./isPC&quot;</span><br><span class="line">is_pc = isPC()</span><br><span class="line">// #endif</span><br><span class="line"></span><br><span class="line"> //  删改后的代码</span><br><span class="line"> let mpMixins = &#123;&#125;</span><br><span class="line"> let isPC = function () &#123; return false &#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>这样改的原因是：  <code>is_pc</code>  是H5特有的，在小程序中使用会报错</p>
-</li>
-</ul>
-<h3 id="TypeError-uni-requireNativePlugin-is-not-a-function-Search"><a href="#TypeError-uni-requireNativePlugin-is-not-a-function-Search" class="headerlink" title="TypeError: uni.requireNativePlugin is not a function - Search"></a>TypeError: uni.requireNativePlugin is not a function - Search</h3><ul>
-<li><p>ZOE在很多次尝试后，最后是在根目录新建了一个文件 <code>vue.config.js</code>  ，并在文件中定义：</p>
- <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">    transpileDependencies: [&#x27;@dcloudio/uni-ui&#x27;]</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>ZOE也不清楚为什么要这样改的，但确实是有用的</p>
-</li>
-</ul>
-<h3 id="TypeError-this-swipeaction-closeOther-is-not-a-function"><a href="#TypeError-this-swipeaction-closeOther-is-not-a-function" class="headerlink" title="TypeError: this.swipeaction.closeOther is not a function"></a>TypeError: this.swipeaction.closeOther is not a function</h3><ul>
-<li><p>这个报错也很难搞，它大概是每次点击一下需要删除的那一行物品时，都会报这个错误，然后ZOE采用了一位博主的<strong>暴力法</strong>：</p>
-</li>
-<li><p>直接删去了<u>项目名称\node_modules@dcloudio\uni-ui\lib\uni-swipe-action-item\mpxs.js</u> 中的<code>onClickForPC()&#123;&#125;</code> 函数</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// onClickForPC(index, item, position) &#123;</span><br><span class="line">// 	if (!is_pc) return</span><br><span class="line">// 	// #ifdef H5</span><br><span class="line">// 	this.$emit(&#x27;click&#x27;, &#123;</span><br><span class="line">// 		content: item,</span><br><span class="line">// 		index,</span><br><span class="line">// 		position</span><br><span class="line">// 	&#125;)</span><br><span class="line">// 	// #endif</span><br><span class="line">// &#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="选择地址报错"><a href="#选择地址报错" class="headerlink" title="选择地址报错"></a>选择地址报错</h2><ul>
-<li><p><strong>错误信息：chooseAddress:fail the api need to be declared in …e requiredPrivateInfos field in app.json&#x2F;ext.js</strong></p>
-<p>说起来也巧，ZOE是在2022&#x2F;7&#x2F;16遇到的这个问题，emmm，而官方发布调整文件o(╥﹏╥)o：</p>
-<p><img src="https://pic.imgdb.cn/item/62d2f2fef54cd3f9377fe9c6.png" alt="地理位置接口新增说明"></p>
-<ul>
-<li><p>改正方法可参考官方文档：</p>
-<p><a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/community/develop/doc/000a02f2c5026891650e7f40351c01">地理位置接口新增与相关流程调整</a></p>
-</li>
-</ul>
-</li>
-</ul>
-
-        </div>
-        <!-- .entry-content -->
-        <div class="single-reward">
-          <div class="reward-open">赏
-            <div class="reward-main">
-              <ul class="reward-row">
-                <li class="alipay-code"><img src="https://pic.imgdb.cn/item/62c868a9f54cd3f937d2d6a2.jpg"></li>
-                <li class="wechat-code"><img src="https://pic.imgdb.cn/item/62c868bff54cd3f937d2ee68.jpg"></li>
-              </ul>
+  <div id="main">
+    <header class="page-header">
+      <h1 class="cat-title">
+      归档</h1>
+      <span class="cat-des">
+        <p>
+        Archives</p>
+      </span>
+    </header>
+    <div id="main-part">
+      <article class="art">
+        <div class="art-main">
+          <div class="art-content">
+            <div id="archives">
+              <p style="text-align:right;">
+                [<span id="al_expand_collapse" style="cursor: s-resize;">
+                全部展开/收缩</span>
+              ]</p>
+              
+              
+              
+              
+              
+                
+                <h3 class="al_year">2022年</h3>
+              
+              
+                
+                <ul class="al_mon_list">
+                  <li class="al_li">
+                    <span class="al_mon" style="cursor: s-resize;">
+                      08月(<span id="post-num">
+                      3</span>
+                    篇文章)</span>
+                    <ul class="al_post_list" style="">
+              
+                      <li>
+                        <a href="/2022/08/08/%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86%E5%90%8E%E9%83%A8%E5%88%86axios%E8%AF%B7%E6%B1%82%E4%B8%8D%E6%90%BA%E5%B8%A6cookie/">
+                          <span style="color:#0bf;">
+                          08日23:00:00</span>
+                          设置代理后axios请求不携带cookie （308）
+                        </a>
+                      </li>
+                      
+                    </ul>
+                  </li>
+                </ul>
+              
+              
+              
+              
+              
+              
+                
+                <ul class="al_mon_list">
+                  <li class="al_li">
+                    <span class="al_mon" style="cursor: s-resize;">
+                      07月(<span id="post-num">
+                      3</span>
+                    篇文章)</span>
+                    <ul class="al_post_list" style="">
+              
+                      <li>
+                        <a href="/2022/07/16/vscode%E5%86%99uniapp%E7%9A%84bug%E8%AE%B0%E5%BD%95/">
+                          <span style="color:#0bf;">
+                          16日00:00:00</span>
+                          vscode写uniapp的bug记录
+                        </a>
+                      </li>
+                      
+              
+              
+              
+              
+              
+                      <li>
+                        <a href="/2022/07/14/%E5%88%9B%E5%BB%BAuniapp%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8cli%E5%92%8C%E4%BD%BF%E7%94%A8HBuilderX%E5%8F%AF%E8%A7%86%E5%8C%96%E7%95%8C%E9%9D%A2%E7%9A%84%E5%8C%BA%E5%88%AB/">
+                          <span style="color:#0bf;">
+                          14日00:00:00</span>
+                          创建uniapp项目使用cli和使用HBuilderX可视化界面的区别
+                        </a>
+                      </li>
+                      
+              
+              
+              
+              
+              
+                      <li>
+                        <a href="/2022/07/14/%E7%94%A8vscode%E5%86%99uniapp%E4%B8%AD%E4%BD%BF%E7%94%A8scss%E6%8A%A5%E9%94%99/">
+                          <span style="color:#0bf;">
+                          14日00:00:00</span>
+                          用vscode写uniapp中使用 lang = &#34;scss&#34;报错
+                        </a>
+                      </li>
+                      
+              
+              
+              
+              
+              
+                      <li>
+                        <a href="/2022/07/08/%E8%89%BE%E7%B1%B3%E4%B8%BD%E5%85%AC%E5%BC%8F/">
+                          <span style="color:#0bf;">
+                          08日23:30:00</span>
+                          艾米丽公式
+                        </a>
+                      </li>
+                      
+              
+              
+              
+              
+              
+                      <li>
+                        <a href="/2022/07/08/%E6%95%B0%E6%8D%AE%E6%8C%96%E6%8E%98%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">
+                          <span style="color:#0bf;">
+                          08日22:30:00</span>
+                          数据挖掘与数据分析
+                        </a>
+                      </li>
+                      
+                    </ul>
+                  </li>
+                </ul>
+              
+              
+              
+              
+              
+                
+                <h3 class="al_year">2018年</h3>
+              
+              
+                
+                <ul class="al_mon_list">
+                  <li class="al_li">
+                    <span class="al_mon" style="cursor: s-resize;">
+                      12月(<span id="post-num">
+                      3</span>
+                    篇文章)</span>
+                    <ul class="al_post_list" style="">
+              
+                      <li>
+                        <a href="/2018/12/12/Hexo-Theme-Sakura/">
+                          <span style="color:#0bf;">
+                          12日22:16:01</span>
+                          Hexo-Theme-Sakura
+                        </a>
+                      </li>
+                      
+                    </ul>
+                  </li>
+                </ul>
+              
+              
             </div>
           </div>
         </div>
-        <div style="text-align:center; width: 100%" class="social-share share-mobile" data-disabled="diandian, tencent"></div>
-        <footer class="post-footer">
-          <div class="post-lincenses"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow"><i class="fa fa-creative-commons" aria-hidden="true"></i> 知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a></div>
-          <div class="post-tags">
-          </div>
-          <div class="post-share">
-            <div class="social-share sharehidden share-component"></div>
-            <i class="iconfont show-share icon-forward"></i>
-          </div>
-        </footer><!-- .entry-footer -->
       </article>
-      <!-- #post-## -->
-      <div class="toc" style="background: none;"></div>
-      <section class="post-squares nextprev">
-        
-          
-            <div class="post-nepre half previous">
-          
-            <a href="/2022/08/08/%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86%E5%90%8E%E9%83%A8%E5%88%86axios%E8%AF%B7%E6%B1%82%E4%B8%8D%E6%90%BA%E5%B8%A6cookie/" rel="prev">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/honjun/cdn@1.6/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://tse2-mm.cn.bing.net/th/id/OIP-C.FbMqpnXQZzCEUySmyPcAEgHaEK?pid=ImgDet&rs=1" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://tse2-mm.cn.bing.net/th/id/OIP-C.FbMqpnXQZzCEUySmyPcAEgHaEK?pid=ImgDet&rs=1">
-              </div>
-              <span class="label">
-              Previous Post</span>
-              <div class="info">
-                <h3>
-                设置代理后axios请求不携带cookie （308）</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-        
-          
-            <div class="post-nepre half next">
-          
-            <a href="/2022/07/14/%E5%88%9B%E5%BB%BAuniapp%E9%A1%B9%E7%9B%AE%E4%BD%BF%E7%94%A8cli%E5%92%8C%E4%BD%BF%E7%94%A8HBuilderX%E5%8F%AF%E8%A7%86%E5%8C%96%E7%95%8C%E9%9D%A2%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="next">
-              <div class="background">
-                <img class="lazyload" src="https://cdn.jsdelivr.net/gh/honjun/cdn@1.6/img/loader/orange.progress-bar-stripe-loader.svg" data-src="https://tse4-mm.cn.bing.net/th/id/OIP-C.-biWy4EUKtm7_yrXlUVz0wHaHZ?pid=ImgDet&rs=1" style="width: 100%; height: 100%; object-fit: cover; pointer-events: none;" onerror="imgError(this,3)" src="https://tse4-mm.cn.bing.net/th/id/OIP-C.-biWy4EUKtm7_yrXlUVz0wHaHZ?pid=ImgDet&rs=1">
-              </div>
-              <span class="label">
-              Next Post</span>
-              <div class="info">
-                <h3>
-                创建uniapp项目使用cli和使用HBuilderX可视化界面的区别</h3>
-                <hr>
-              </div>
-            </a>
-          </div>
-        
-      </section>
-      
-<div id="vcomments"></div>
-<script>
-  window.onload = function(){
-      var valine = new Valine();
-      valine.init({
-        el: '#vcomments',
-        appId: "GyC3NzMvd0hT9Yyd2hYIC0MN-gzGzoHsz",
-        appKey: "mgOpfzbkHYqU92CV4IDlAUHQ",
-        path: window.location.pathname,
-        placeholder: "你是我一生只会遇见一次的惊喜 ..."
-      })
-  }
-</script>
-
-
-
-
-      <section class="author-profile">
-        <div
-          class="info"
-          itemprop="author"
-          itemscope=""
-          itemtype="https://schema.org/Person"
-        >
-          <a href="/about/" class="profile gravatar"
-            ><img
-              src="https://i04piccdn.sogoucdn.com/d90bfde0e2cbc8fe"
-              itemprop="image"
-              alt="Zoe Loo"
-              height="70"
-              width="70"
-          /></a>
-          <div class="meta">
-            <span class="title">Author</span>
-            <h3 itemprop="name">
-              <a href="" itemprop="url" rel="author"
-                >Zoe Loo</a
-              >
-            </h3>
-          </div>
-        </div>
-        <hr />
-        <p><i class="iconfont icon-write"></i>你逆光而来，配得上这世间的所有美好</p>
-      </section>
-    </main><!-- #main -->
-  </div><!-- #primary -->
+    </div>
+  </div>
 </div>
-
-
 
       </div>
       <div class="ins-search">
