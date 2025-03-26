@@ -37,7 +37,7 @@ function bot_ui_ini() {
         }).then(function () {
             botui.message.add({
                 delay: 1100,
-                content: "一个善良大方、善解人意的女孩纸~"
+                content: "一个努力学习、善解人意的女生~"
             }).then(function () {
                 botui.action.button({
                     delay: 1600,
@@ -72,25 +72,25 @@ function bot_ui_ini() {
         secondpart = function () {
             botui.message.add({
                 delay: 1500,
-                content: "目前就读于天津理工大学"
+                content: "我是推免至中科院某研究所的直博生"
             }).then(function () {
                 botui.message.add({
                     delay: 1500,
-                    content: "现在是本科阶段，学的是数据科学与大数据技术专业，业余正在学前端"
+                    content: "目前是研0阶段"
                 }).then(function () {
                     botui.message.add({
                         delay: 1200,
-                        content: "因为大学前从未接触过计算机知识，前端相对于大数据比较简单一些嘛~"
+                        content: "直博确实是一段艰难的旅行"
                     }).then(function () {
                         botui.message.add({
                             delay: 1500,
-                            content: "爱好，emmm，爱好就是看动漫听民谣啦，哦对了，说到民谣，民谣与评论共食味道极佳嗷~"
+                            content: "但我会努力走完全程的！"
                         }).then(function () {
                             botui.action.button({
                                 delay: 1100,
                                 action: [{
-                                    text: "为什么叫Zoe Loo呢？ 🤔",
-                                    value: "why-ZoeLoo"
+                                    text: "你学习的是什么方向呢？ 🤔",
+                                    value: "what-major"
                                 }]
                             }).then(function (a) {
                                 thirdpart()
@@ -103,11 +103,11 @@ function bot_ui_ini() {
         thirdpart = function () {
             botui.message.add({
                 delay: 1E3,
-                content: "只是根据我的中文名的音译啦~"
+                content: "我本科业余学了前端，还和实验室导师进行了一些算法方面的研究，以第一作者身份发表了两篇论文。"
             }).then(function () {
                 botui.message.add({
                     delay: 1600,
-                    content: "那么，仔细看看我的博客叭 ^_^"
+                    content: "研究生阶段我的研究方向是威胁分析，接下来我也会认真学习安全的知识！ヾ(◍°∇°◍)ﾉﾞ"
                 })
             })
         }
